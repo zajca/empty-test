@@ -1148,6 +1148,11 @@ class BranchComponentTest extends StorageApiTestCase
         $configurations = $branchComponents->listComponentConfigurations($listConfigurationOptions);
         $this->assertCount(0, $configurations);
 
+        $rows = $branchComponents->listConfigurationRows((new ListConfigurationRowsOptions())
+            ->setComponentId($componentId)
+            ->setConfigurationId('main-1'));
+        $this->assertCount(1, $rows);
+
         // try to restore again
         try {
             $branchComponents->restoreComponentConfiguration($componentId, 'main-1');
@@ -1185,6 +1190,11 @@ class BranchComponentTest extends StorageApiTestCase
         $listConfigurationOptions->setIsDeleted(true);
         $configurations = $branchComponents->listComponentConfigurations($listConfigurationOptions);
         $this->assertCount(0, $configurations);
+
+        $rows = $branchComponents->listConfigurationRows((new ListConfigurationRowsOptions())
+            ->setComponentId($componentId)
+            ->setConfigurationId('main-1'));
+        $this->assertCount(0, $rows);
 
         $configuration = $branchComponents->getConfiguration($componentId, 'main-1');
         $this->assertSame('main-1', $configuration['id']);
