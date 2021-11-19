@@ -23,5 +23,6 @@ class TokensShareTest extends StorageApiTestCase
     {
         $newToken = $this->tokens->createToken(new TokenCreateOptions());
         $this->tokens->shareToken($newToken['id'], 'test@devel.keboola.com', 'Hi');
+        $this->expectNotToPerformAssertions();
     }
 }
