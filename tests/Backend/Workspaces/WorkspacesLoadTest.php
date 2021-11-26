@@ -2089,9 +2089,20 @@ class WorkspacesLoadTest extends ParallelWorkspacesTestCase
             $this->markTestSkipped(sprintf('Read only mapping is not enabled for project "%s"', $token['owner']['id']));
         }
 
+        // for development - drop+create new to ensure correct grants
+        $workspaces = new Workspaces($this->workspaceSapiClient);
+        $workspacesList = $this->listTestWorkspaces($this->workspaceSapiClient);
+        foreach ($workspacesList as $oneWorkspace) {
+            $workspaces->deleteWorkspace($oneWorkspace['id']);
+        }
+
         // prepare bucket
         $testBucketId = $this->getTestBucketId();
         $testBucketName = str_replace('in.c-', '', $testBucketId);
+
+        // for development - drop+create to ensure correct grants
+        $this->dropBucketIfExists($this->_client, $testBucketId, true);
+        $testBucketId = $this->_client->createBucket($testBucketName, 'in');
 
         // prepare table in the bucket
         $this->_client->createTable(
