@@ -37,8 +37,8 @@ class TableMetadataUpdateOptions
         }
         $this->tableId = $tableId;
         $this->provider = $provider;
-        $this->tableMetadata = $tableMetadata;
-        $this->columnsMetadata = $columnsMetadata;
+        $this->tableMetadata = $tableMetadata ?: [];
+        $this->columnsMetadata = $columnsMetadata ?: [];
     }
 
     /**
