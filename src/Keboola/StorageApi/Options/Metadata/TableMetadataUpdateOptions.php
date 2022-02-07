@@ -12,10 +12,10 @@ class TableMetadataUpdateOptions
     /** @var string */
     private $provider;
 
-    /** @var array */
+    /** @var array<int, array{key: string, value: string}> */
     private $tableMetadata;
 
-    /** @var array */
+    /** @var array<string, array<int, array{key: string, value: string}>> */
     private $columnsMetadata;
 
     /**
