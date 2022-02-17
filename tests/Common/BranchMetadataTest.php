@@ -60,6 +60,7 @@ class BranchMetadataTest extends StorageApiTestCase
         $this->assertIsArray($metadata);
 
         // add metadata
+        /** @var array $metadata */
         $metadata = $defaultMdClient->postBranchMetadata(self::TEST_METADATA);
         $this->assertCount(2, $metadata);
         $this->assertMetadataEquals(self::TEST_METADATA[0], $metadata[0]);
@@ -75,6 +76,7 @@ class BranchMetadataTest extends StorageApiTestCase
                 'value' => 'some-value-2',
             ],
         ];
+        /** @var array $newMetadata */
         $newMetadata = $defaultMdClient->postBranchMetadata($updatedMetadata);
         $this->assertCount(2, $newMetadata);
         $this->assertMetadataEquals($updatedMetadata[0], $newMetadata[0]);
