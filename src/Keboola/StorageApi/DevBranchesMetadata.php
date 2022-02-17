@@ -31,4 +31,13 @@ class DevBranchesMetadata
             'metadata' => $metadata,
         ]);
     }
+
+    /**
+     * @param int|string $id
+     * @return mixed|string
+     */
+    public function deleteBranchMetadata($id)
+    {
+        return $this->client->apiDelete("metadata/$id");
+    }
 }
