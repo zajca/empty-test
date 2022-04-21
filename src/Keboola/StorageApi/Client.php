@@ -153,6 +153,7 @@ class Client
         } else {
             $this->setJobPollRetryDelay(createSimpleJobPollDelay());
         }
+        assert($this->jobPollRetryDelay !== null);
 
         $this->initClient();
         $this->tokens = new Tokens($this);
@@ -946,7 +947,7 @@ class Client
      *  - data
      *  - withoutHeaders
      *  - columns
-     * @return mixed|string
+     * @return array<mixed>
      * @throws ClientException
      */
     public function writeTable($tableId, CsvFile $csvFile, $options = array())
@@ -2474,11 +2475,12 @@ class Client
      */
     public static function parseCsv($csvString, $header = true, $delimiter = ",", $enclosure = '"')
     {
-        $data = array();
-        $headers = array();
+        $data = [];
+        $headers = [];
         $firstLine = true;
 
         $tmpFile = tmpfile();
+        assert($tmpFile !== false);
         fwrite($tmpFile, $csvString);
         rewind($tmpFile);
 

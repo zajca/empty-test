@@ -66,6 +66,11 @@ final class InputMappingConverter
         return $input;
     }
 
+    /**
+     * @param array<mixed> $column
+     * @param string $backendType
+     * @return array<mixed>|string
+     */
     public static function convertColumnOrType($column, $backendType)
     {
         $isOnlyType = is_string($column);

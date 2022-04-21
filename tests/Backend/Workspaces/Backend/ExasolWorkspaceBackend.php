@@ -100,6 +100,7 @@ class ExasolWorkspaceBackend implements WorkspaceBackend
         ));
         switch ($style) {
             case \PDO::FETCH_NUM:
+                /** @var array<mixed> $row */
                 foreach ($res as $row) {
                     $data[] = array_values($row);
                 }

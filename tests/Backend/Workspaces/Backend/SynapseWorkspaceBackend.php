@@ -12,6 +12,7 @@ use Keboola\TableBackendUtils\Table\SynapseTableQueryBuilder;
 use Keboola\TableBackendUtils\Table\SynapseTableReflection;
 use Keboola\TableBackendUtils\View\SynapseViewReflection;
 use Keboola\Test\Backend\WorkspaceConnectionTrait;
+use phpDocumentor\Reflection\Types\Mixed_;
 
 class SynapseWorkspaceBackend implements WorkspaceBackend
 {
@@ -104,6 +105,7 @@ class SynapseWorkspaceBackend implements WorkspaceBackend
         ));
         switch ($style) {
             case \PDO::FETCH_NUM:
+                /** @var array<mixed> $row */
                 foreach ($res as $row) {
                     $data[] = array_values($row);
                 }

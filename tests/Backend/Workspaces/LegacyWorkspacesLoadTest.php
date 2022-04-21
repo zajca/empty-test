@@ -525,6 +525,7 @@ class LegacyWorkspacesLoadTest extends ParallelWorkspacesTestCase
             new CsvFile($importFile)
         );
         $originalFileLinesCount = exec("wc -l <" . escapeshellarg($importFile));
+        assert($originalFileLinesCount !== false);
         sleep(35);
         $startTime = time();
         $importCsv = new \Keboola\Csv\CsvFile($importFile);

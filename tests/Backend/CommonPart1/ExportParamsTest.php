@@ -46,6 +46,7 @@ class ExportParamsTest extends StorageApiTestCase
         $tableId = $this->_client->createTable($this->getTestBucketId(self::STAGE_IN), 'languages', new CsvFile($importFile));
 
         $originalFileLinesCount = exec("wc -l <" . escapeshellarg($importFile));
+        assert($originalFileLinesCount !== false);
 
         $data = $this->_client->getTableDataPreview($tableId);
         $this->assertEquals($originalFileLinesCount, count(Client::parseCsv($data, false)));
