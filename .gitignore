@@ -17,4 +17,5 @@ set-env.sharing.sh
 snowflake_linux_x8664_odbc.tgz
 REVISION
 /cache
+/tests/Backend/_tmp
 phpunit-retry.xml

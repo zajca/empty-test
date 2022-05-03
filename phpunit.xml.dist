@@ -206,8 +206,11 @@
 	</testsuite>
 
 	<testsuite name="paratest-teradata">
+		<!--BUCKET-->
 		<file>tests/Backend/CommonPart1/BucketsTest.php</file>
 		<file>tests/Backend/CommonPart1/CreateTableTest.php</file>
+		<file>tests/Backend/Export/ExportSimpleTest.php</file>
+		<file>tests/Backend/CommonPart2/SnapshottingTest.php</file>
 		<!-- TODO use after export supports incremental load, filters... -->
 		<!--<file>tests/Backend/CommonPart1/ExportParamsTest.php</file>-->
 		<!--<file>tests/Backend/CommonPart1/ImportExportCommonTest.php</file>-->
