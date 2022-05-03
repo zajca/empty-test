@@ -9,6 +9,9 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ExportSimpleTest extends StorageApiTestCase
 {
+    /**
+     * @return void
+     */
     public function setUp()
     {
         parent::setUp();
@@ -22,7 +25,7 @@ class ExportSimpleTest extends StorageApiTestCase
      * @dataProvider tableExportSimpleProvider
      *
      * @param int $expectedColumnsCount
-     * @param scalar[] $ignoreColumnKeys
+     * @param array[] $ignoreColumnKeys
      * @return void
      */
     public function testTableExportAsyncSliced(array $exportOptions, array $expectedResult, $expectedColumnsCount, array $ignoreColumnKeys)
@@ -98,10 +101,12 @@ class ExportSimpleTest extends StorageApiTestCase
             ]);
             $bucket = $exportedFile["s3Path"]["bucket"];
             $prefix = $exportedFile["s3Path"]["key"];
+            /** @var array{Contents: array} $objects */
             $objects = $s3Client->listObjects(array(
                 "Bucket" => $bucket,
                 "Prefix" => $prefix
             ));
+            /** @var array{Key: string} $object */
             foreach ($objects["Contents"] as $object) {
                 $objectDetail = $s3Client->headObject([
                     'Bucket' => $bucket,
@@ -117,6 +122,9 @@ class ExportSimpleTest extends StorageApiTestCase
         }
     }
 
+    /**
+     * @return \Generator
+     */
     public function tableExportSimpleProvider()
     {
         yield 'basic' => [
