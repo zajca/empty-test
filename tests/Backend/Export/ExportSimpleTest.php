@@ -45,11 +45,13 @@ class ExportSimpleTest extends StorageApiTestCase
         $this->assertTrue($exportedFile['isSliced']);
         $this->assertGreaterThan(0, $exportedFile['sizeBytes']);
 
-        $tmpDestinationFolder = __DIR__ . '/../_tmp/slicedUpload/';
+
+        $tmpDestinationFolder = sprintf(
+            '%s/%s',
+            sys_get_temp_dir(),
+            uniqid('slicedUpload', true)
+        );
         $fs = new Filesystem();
-        if (file_exists($tmpDestinationFolder)) {
-            $fs->remove($tmpDestinationFolder);
-        }
         $fs->mkdir($tmpDestinationFolder);
 
         $slices = $this->_client->downloadSlicedFile($results['file']['id'], $tmpDestinationFolder);
