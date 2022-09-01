@@ -30,27 +30,104 @@ class ImportTypedTableTest extends ParallelWorkspacesTestCase
         $bucketId = $this->getTestBucketId(self::STAGE_IN);
 
         $payload = [
-            'name' => 'tw-accountsFull',
-            'primaryKeysNames' => ['id'],
+            'name' => 'user_integration_rejection_json',
+            'primaryKeysNames' => ['id', 'name'],
             'columns' => [
-                ['name' => 'id', 'definition' => ['type' => 'INT']],
-                ['name' => 'idTwitter', 'definition' => ['type' => 'BIGINT']],
-                ['name' => 'name', 'definition' => ['type' => 'NVARCHAR']],
-                ['name' => 'import', 'definition' => ['type' => 'INT']],
-                ['name' => 'isImported', 'definition' => ['type' => 'TINYINT']],
-                ['name' => 'apiLimitExceededDatetime', 'definition' => ['type' => 'DATETIME2']],
-                ['name' => 'analyzeSentiment', 'definition' => ['type' => 'TINYINT']],
-                ['name' => 'importKloutScore', 'definition' => ['type' => 'INT']],
-                ['name' => 'timestamp', 'definition' => ['type' => 'DATETIME2']],
-                ['name' => 'oauthToken', 'definition' => ['type' => 'NVARCHAR']],
-                ['name' => 'oauthSecret', 'definition' => ['type' => 'NVARCHAR']],
-                ['name' => 'idApp', 'definition' => ['type' => 'INT']],
-            ],
-            'distribution' => [
-                'type' => 'HASH',
-                'distributionColumnsNames' => ['id'],
+                ['name' => 'id', 'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true]],
+                ['name' => 'name', 'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true]],
+                [
+                    'name' => 'brand_id',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'is_per_location',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'category_code',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                ['name' => 'size', 'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true]],
+                [
+                    'name' => 'status',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'start_time',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'end_time',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'triggered_at',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'transfer_direction',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'total_number_of_records',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'Employee_Name',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'hire_date',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'postion_id',
+                    'definition' => ['type' => 'NUMBER', 'length' => '38,0', 'nullable' => true],
+                ],
+                [
+                    'name' => 'postion_name',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'pay_rate',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'position_start_date',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                [
+                    'name' => 'pay_type',
+                    'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true],
+                ],
+                ['name' => 'email', 'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true]],
+                ['name' => 'phone', 'definition' => ['type' => 'TEXT', 'length' => '16777216', 'nullable' => true]],
             ],
         ];
+
+
+        //$payload = [
+        //    'name' => 'tw-accountsFull',
+        //    'primaryKeysNames' => ['id'],
+        //    'columns' => [
+        //        ['name' => 'id', 'definition' => ['type' => 'INT']],
+        //        ['name' => 'idTwitter', 'definition' => ['type' => 'BIGINT']],
+        //        ['name' => 'name', 'definition' => ['type' => 'NVARCHAR']],
+        //        ['name' => 'import', 'definition' => ['type' => 'INT']],
+        //        ['name' => 'isImported', 'definition' => ['type' => 'TINYINT']],
+        //        ['name' => 'apiLimitExceededDatetime', 'definition' => ['type' => 'DATETIME2']],
+        //        ['name' => 'analyzeSentiment', 'definition' => ['type' => 'TINYINT']],
+        //        ['name' => 'importKloutScore', 'definition' => ['type' => 'INT']],
+        //        ['name' => 'timestamp', 'definition' => ['type' => 'DATETIME2']],
+        //        ['name' => 'oauthToken', 'definition' => ['type' => 'NVARCHAR']],
+        //        ['name' => 'oauthSecret', 'definition' => ['type' => 'NVARCHAR']],
+        //        ['name' => 'idApp', 'definition' => ['type' => 'INT']],
+        //    ],
+        //    'distribution' => [
+        //        'type' => 'HASH',
+        //        'distributionColumnsNames' => ['id'],
+        //    ],
+        //];
         $runId = $this->_client->generateRunId();
         $this->_client->setRunId($runId);
 
@@ -429,18 +506,37 @@ class ImportTypedTableTest extends ParallelWorkspacesTestCase
 
         $csvFile = new CsvFile(__DIR__ . '/../../_data/test_csas.csv');
 
-        try {
-            // try import data with wrong types with full load
-            $this->_client->writeTableAsync(
-                $tableId,
-                $csvFile,
-                [
-                    'incremental' => false,
-                ]
-            );
-            $this->fail('This should fail');
-        } catch (ClientException $e) {
-            self::assertSame('[SQL Server]Bulk load data conversion error (type mismatch or invalid character for the specified codepage) for row starting at byte offset 25, column 4 (sex) in data file /users.csv.gz.', $e->getMessage());
-        }
+        $this->_client->writeTableAsync(
+            $tableId,
+            $csvFile,
+            [
+                'incremental' => false,
+                'columns' => [
+                    "active",
+                    "description",
+                    "sys_created_on",
+                    "sys_id",
+                    "u_ticket_quota",
+                    "insert_process_key",
+                    "effective_date",
+                ],
+            ]
+        );
+        $this->_client->writeTableAsync(
+            $tableId,
+            $csvFile,
+            [
+                'incremental' => true,
+                'columns' => [
+                    "active",
+                    "description",
+                    "sys_created_on",
+                    "sys_id",
+                    "u_ticket_quota",
+                    "insert_process_key",
+                    "effective_date",
+                ],
+            ]
+        );
     }
 }
