@@ -165,52 +165,52 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
         $expectedPreview = [
             [
                 [
-                    'columnName' => 'id',
+                    'columnName' => 'ID',
                     'value' => '1',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_decimal',
+                    'columnName' => 'COLUMN_DECIMAL',
                     'value' => '3.123',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_float',
+                    'columnName' => 'COLUMN_FLOAT',
                     'value' => '3.14',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_boolean',
+                    'columnName' => 'COLUMN_BOOLEAN',
                     'value' => '1',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_date',
+                    'columnName' => 'COLUMN_DATE',
                     'value' => '1989-08-31',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_timestamp',
+                    'columnName' => 'COLUMN_TIMESTAMP',
                     'value' => '05:00:01.0000000',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_varchar',
+                    'columnName' => 'COLUMN_VARCHAR',
                     'value' => 'roman',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_money',
+                    'columnName' => 'COLUMN_MONEY',
                     'value' => '3148.29',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_small_money',
+                    'columnName' => 'COLUMN_SMALL_MONEY',
                     'value' => '3148.29',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_uniq',
+                    'columnName' => 'COLUMN_UNIQ',
                     'value' => '0E984725-C51C-4BF4-9960-E1C80E27ABA0',
                     'isTruncated' => false,
                 ],
@@ -314,42 +314,42 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
         $expectedPreview = [
             [
                 [
-                    'columnName' => 'id',
+                    'columnName' => 'ID',
                     'value' => '1',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_int',
+                    'columnName' => 'COLUMN_INT',
                     'value' => '123',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_decimal',
+                    'columnName' => 'COLUMN_DECIMAL',
                     'value' => '3',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_float',
+                    'columnName' => 'COLUMN_FLOAT',
                     'value' => '3.14',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_boolean',
+                    'columnName' => 'COLUMN_BOOLEAN',
                     'value' => '1',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_date',
+                    'columnName' => 'COLUMN_DATE',
                     'value' => '1989-08-31',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_timestamp',
+                    'columnName' => 'COLUMN_TIMESTAMP',
                     'value' => '1989-08-31 05:00:01.0000000',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_varchar',
+                    'columnName' => 'COLUMN_VARCHAR',
                     'value' => 'roman',
                     'isTruncated' => false,
                 ],
@@ -433,42 +433,42 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
         $expectedPreview = [
             [
                 [
-                    'columnName' => 'id',
+                    'columnName' => 'ID',
                     'value' => '1',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_int',
+                    'columnName' => 'COLUMN_INT',
                     'value' => '123',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_decimal',
+                    'columnName' => 'COLUMN_DECIMAL',
                     'value' => '003.123',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_float',
+                    'columnName' => 'COLUMN_FLOAT',
                     'value' => '3.14',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_boolean',
+                    'columnName' => 'COLUMN_BOOLEAN',
                     'value' => '1',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_date',
+                    'columnName' => 'COLUMN_DATE',
                     'value' => '1989-08-31',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_timestamp',
+                    'columnName' => 'COLUMN_TIMESTAMP',
                     'value' => '05:00:01',
                     'isTruncated' => false,
                 ],
                 [
-                    'columnName' => 'column_varchar',
+                    'columnName' => 'COLUMN_VARCHAR',
                     'value' => 'roman',
                     'isTruncated' => false,
                 ],
@@ -570,8 +570,9 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
         }
 
         $expectedColumns = [
-            'id',
-            'column_decimal',
+            'ID',
+            'COLUMN_DECIMAL',
+            // add column is not using table utilities
             'column_float',
             'column_boolean',
             'column_date',
@@ -589,8 +590,8 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
         $metadataClient = new Metadata($this->_client);
         $addedColumnMetadata = $metadataClient->listColumnMetadata("{$sourceTableId}.column_float");
         // alias tables has metadata from source table
-        $firstAliasAddedColumnMetadata = $this->_client->getTable($firstAliasTableId)['sourceTable']['columnMetadata']['column_float'];
-        $secondAliasAddedColumnMetadata = $this->_client->getTable($secondAliasTableId)['sourceTable']['columnMetadata']['column_float'];
+        $firstAliasAddedColumnMetadata = $this->_client->getTable($firstAliasTableId)['sourceTable']['columnMetadata']['COLUMN_FLOAT'];
+        $secondAliasAddedColumnMetadata = $this->_client->getTable($secondAliasTableId)['sourceTable']['columnMetadata']['COLUMN_FLOAT'];
 
         foreach ([$addedColumnMetadata, $firstAliasAddedColumnMetadata, $secondAliasAddedColumnMetadata] as $columnMetadata) {
             $this->assertArrayEqualsExceptKeys([
@@ -654,7 +655,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
         $firstAliasTableId = $this->_client->createAliasTable($this->getTestBucketId(self::STAGE_IN), $this->tableId, 'table-1');
         $secondAliasTableId = $this->_client->createAliasTable($this->getTestBucketId(self::STAGE_IN), $firstAliasTableId, 'table-2');
 
-        $expectedColumns = ['id', 'name'];
+        $expectedColumns = ['ID', 'NAME'];
         $this->assertEquals($expectedColumns, $this->_client->getTable($this->tableId)['columns']);
         $this->assertEquals($expectedColumns, $this->_client->getTable($firstAliasTableId)['columns']);
         $this->assertEquals($expectedColumns, $this->_client->getTable($secondAliasTableId)['columns']);
@@ -686,19 +687,19 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
 
         $newTableId = $this->_client->createTableFromSnapshot($bucketId, $snapshotId, 'restored');
         $newTable = $this->_client->getTable($newTableId);
-        $this->assertEquals('restored', $newTable['name']);
+        $this->assertEquals('RESTORED', $newTable['name']);
 
-        $this->assertSame(['id'], $newTable['primaryKey']);
+        $this->assertSame(['ID'], $newTable['primaryKey']);
         $this->assertSame('HASH', $newTable['distributionType']);
-        $this->assertSame(['id'], $newTable['distributionKey']);
-        $this->assertSame(['id'], $newTable['indexedColumns']);
+        $this->assertSame(['ID'], $newTable['distributionKey']);
+        $this->assertSame(['ID'], $newTable['indexedColumns']);
         $this->assertSame('CLUSTERED INDEX', $newTable['indexType']);
-        $this->assertSame(['id'], $newTable['indexKey']);
+        $this->assertSame(['ID'], $newTable['indexKey']);
 
         $this->assertSame(
             [
-                'id',
-                'name',
+                'ID',
+                'NAME',
             ],
             $newTable['columns']
         );

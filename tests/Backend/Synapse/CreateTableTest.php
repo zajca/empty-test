@@ -285,8 +285,8 @@ class CreateTableTest extends StorageApiTestCase
 
         // check that the new table has correct datypes in metadata
         $metadataClient = new Metadata($this->_client);
-        $idColumnMetadata = $metadataClient->listColumnMetadata("{$tableId}.id");
-        $nameColumnMetadata = $metadataClient->listColumnMetadata("{$tableId}.name");
+        $idColumnMetadata = $metadataClient->listColumnMetadata("{$tableId}.ID");
+        $nameColumnMetadata = $metadataClient->listColumnMetadata("{$tableId}.NAME");
 
         $this->assertArrayEqualsExceptKeys([
             'key' => 'KBC.datatype.type',

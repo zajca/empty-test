@@ -345,7 +345,11 @@ class ImportExportCommonTest extends StorageApiTestCase
         $table = $this->_client->getTable($tableId);
 
         $this->assertEmpty($result['warnings']);
-        $this->assertEquals(['Id', 'Name', 'iso', 'Something'], array_values((array) $result['importedColumns']), 'columns');
+        $expectedColumns = ['id', 'name', 'ISO', 'something'];
+        if ($this->isBackend(self::BACKEND_SYNAPSE)) {
+            $expectedColumns = CaseConverter::arrayToUpper($expectedColumns);
+        }
+        $this->assertEquals($expectedColumns, array_values((array) $result['importedColumns']), 'columns');
         $this->assertEmpty($result['transaction']);
         $this->assertNotEmpty($table['dataSizeBytes']);
         $this->assertNotEmpty($result['totalDataSizeBytes']);

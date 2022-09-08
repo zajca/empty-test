@@ -179,18 +179,18 @@ class ImportTypedTableTest extends ParallelWorkspacesTestCase
             ],
         ];
         $expectedColumnsInWorkspace = [
-            'id',
-            'idTwitter',
-            'name',
-            'import',
-            'isImported',
-            'apiLimitExceededDatetime',
-            'analyzeSentiment',
-            'importKloutScore',
-            'timestamp',
-            'oauthToken',
-            'oauthSecret',
-            'idApp',
+            'ID',
+            'IDTWITTER',
+            'NAME',
+            'IMPORT',
+            'ISIMPORTED',
+            'APILIMITEXCEEDEDDATETIME',
+            'ANALYZESENTIMENT',
+            'IMPORTKLOUTSCORE',
+            'TIMESTAMP',
+            'OAUTHTOKEN',
+            'OAUTHSECRET',
+            'IDAPP',
         ];
 
         $expectedTableTypesInWorkspace = [
