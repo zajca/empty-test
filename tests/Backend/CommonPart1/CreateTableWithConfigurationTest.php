@@ -69,13 +69,13 @@ class CreateTableWithConfigurationTest extends StorageApiTestCase
     protected function assertMetadata(array $table): void
     {
         $expected = [
-            'ID' => [
+            'id' => [
                 'KBC.datatype.type' => 'NUMBER',
                 'KBC.datatype.nullable' => '1',
                 'KBC.datatype.basetype' => 'NUMERIC',
                 'KBC.datatype.length' => '38,0',
             ],
-            'NAME' => [
+            'name' => [
                 'KBC.datatype.type' => 'VARCHAR',
                 'KBC.datatype.nullable' => '1',
                 'KBC.datatype.basetype' => 'STRING',
@@ -125,7 +125,7 @@ class CreateTableWithConfigurationTest extends StorageApiTestCase
 
         $this->assertTrue($table['isTyped']);
         $this->assertNotEmpty($table['created']);
-        $this->assertEquals(['ID', 'NAME'], $table['columns']);
+        $this->assertEquals(['id', 'name'], $table['columns']);
 
         $this->assertMetadata($table);
 
@@ -324,8 +324,7 @@ class CreateTableWithConfigurationTest extends StorageApiTestCase
         } catch (ClientException $e) {
             $errorMessage = 'Migration ID: 1 of custom table failed because of : An exception occurred while executing a query:';
             $this->assertStringContainsString($errorMessage, $e->getMessage());
-            $errorMessage = 'syntax error line 1 at position 0 unexpected \'ASD\'. (executed query: ASD)';
-            $this->assertStringContainsString($errorMessage, $e->getMessage());
+            $this->assertStringContainsString('ASD', $e->getMessage());
         }
 
         // check events
