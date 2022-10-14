@@ -32,6 +32,13 @@ class CreateTableWithConfigurationTest extends StorageApiTestCase
             $this->markTestSkipped(sprintf('Creating tables from configurations feature is not enabled for project "%s"', $token['owner']['id']));
         }
 
+        if ($token['owner']['defaultBackend'] !== self::BACKEND_SYNAPSE) {
+            self::markTestSkipped(sprintf(
+                'Backend "%s" is not supported tables with configuration',
+                $token['owner']['defaultBackend']
+            ));
+        }
+
         // init buckets
         $this->initEmptyTestBucketsForParallelTests();
 
@@ -70,10 +77,9 @@ class CreateTableWithConfigurationTest extends StorageApiTestCase
     {
         $expected = [
             'id' => [
-                'KBC.datatype.type' => 'NUMBER',
+                'KBC.datatype.type' => 'INT',
                 'KBC.datatype.nullable' => '1',
-                'KBC.datatype.basetype' => 'NUMERIC',
-                'KBC.datatype.length' => '38,0',
+                'KBC.datatype.basetype' => 'INTEGER',
             ],
             'name' => [
                 'KBC.datatype.type' => 'VARCHAR',
@@ -102,7 +108,7 @@ class CreateTableWithConfigurationTest extends StorageApiTestCase
             ->setConfiguration([
                 'migrations' => [
                     [
-                        'sql' => 'CREATE TABLE {{ id(bucketName) }}.{{ id(tableName) }} (id integer, name varchar(100))',
+                        'sql' => 'CREATE TABLE {{ id(bucketName) }}.{{ id(tableName) }} ("id" integer, "name" varchar(100))',
                         'description' => 'first ever',
                     ],
                 ],
@@ -138,7 +144,7 @@ class CreateTableWithConfigurationTest extends StorageApiTestCase
         $event = reset($events);
         $this->assertArrayHasKey('params', $event);
         $this->assertArrayHasKey('columns', $event['params']);
-        $this->assertEqualsIgnoringCase(['ID', 'NAME'], $event['params']['columns']);
+        $this->assertEqualsIgnoringCase(['id', 'name'], $event['params']['columns']);
     }
 
     public function testTableCreateWithMeaningFullQueryAsSecond(): void
