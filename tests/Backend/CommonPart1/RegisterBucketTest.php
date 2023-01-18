@@ -31,6 +31,7 @@ class RegisterBucketTest extends StorageApiTestCase
             $token['owner']['defaultBackend'],
             [
                 self::BACKEND_SNOWFLAKE,
+                self::BACKEND_TERADATA,
             ],
             true
         )) {
