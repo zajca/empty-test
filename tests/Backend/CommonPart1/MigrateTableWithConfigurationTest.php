@@ -99,7 +99,9 @@ class MigrateTableWithConfigurationTest extends StorageApiTestCase
         ], $table);
 
         // check events
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableWithConfigurationMigrated', $tableId, 10);
-        $this->assertCount(2, $events);
+        $assertCallback = function ($events) {
+            $this->assertCount(2, $events);
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.tableWithConfigurationMigrated', $tableId);
     }
 }

@@ -134,11 +134,15 @@ JSON;
         ], $table);
 
         // check events
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableWithConfigurationImportQuery', $tableId, 50);
-        $this->assertCount(8, $events);
+        $assertCallback = function ($events) {
+            $this->assertCount(8, $events);
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.tableWithConfigurationImportQuery', $tableId);
 
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableImportDone', $tableId, 10);
-        $this->assertCount(1, $events);
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.tableImportDone', $tableId);
     }
 
     public function testLoadFromFileToTableOnError(): void
@@ -451,10 +455,14 @@ JSON;
         ], $table);
 
         // check events
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableWithConfigurationImportQuery', $tableId, 50);
-        $this->assertCount(9, $events);
+        $assertCallback = function ($events) {
+            $this->assertCount(9, $events);
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.tableWithConfigurationImportQuery', $tableId);
 
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableImportDone', $tableId, 10);
-        $this->assertCount(1, $events);
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.tableImportDone', $tableId);
     }
 }

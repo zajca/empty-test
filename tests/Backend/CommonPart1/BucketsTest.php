@@ -24,7 +24,7 @@ class BucketsTest extends StorageApiTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->_initEmptyTestBuckets();
+        $this->initEmptyTestBucketsForParallelTests();
     }
 
     public function testBucketsList(): void
@@ -121,36 +121,16 @@ class BucketsTest extends StorageApiTestCase
         // create bucket event
         $this->_client->listTables($this->getTestBucketId());
 
-        // wait until the event is propagated through the queue and ES
-        $client = $this->_client;
-        $this->retryWithCallback(function () use ($client) {
-            return $client->listEvents([
-                'sinceId' => $this->lastEventId,
-                'limit' => 100,
-                'q' => sprintf(
-                    'token.id:%s AND event:%s AND objectId:%s',
-                    $this->tokenId,
-                    'storage.tablesListed',
-                    'in.c-API-tests'
-                ),
-            ]);
-        }, function ($events) {
+        $assertCallback = function ($events) {
             $this->assertCount(1, $events);
-        });
+            // check bucket events
+            $this->assertSame('storage.tablesListed', $events[0]['event']);
+            $this->assertSame('Listed tables', $events[0]['message']);
+            $this->assertSame($this->getTestBucketId(), $events[0]['objectId']);
+            $this->assertSame('bucket', $events[0]['objectType']);
+        };
 
-        // check bucket events
-        $events = $this->_client->listBucketEvents($this->getTestBucketId(), ['sinceId' => $this->lastEventId]);
-        $this->assertIsArray($events);
-        $this->assertCount(1, (array) $events);
-        $this->assertEvent(
-            $events[0],
-            'storage.tablesListed',
-            'Listed tables',
-            'in.c-API-tests',
-            'c-API-tests',
-            'bucket',
-            []
-        );
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.tablesListed', $this->getTestBucketId());
     }
 
     public function testBucketsListWithIncludeParameter(): void

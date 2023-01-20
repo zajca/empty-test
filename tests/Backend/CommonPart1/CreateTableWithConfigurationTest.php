@@ -110,16 +110,19 @@ class CreateTableWithConfigurationTest extends StorageApiTestCase
             ],
         ], $table);
 
-        // check events
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableWithConfigurationMigrated', $tableId, 10);
-        $this->assertCount(1, $events);
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+        };
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.tableWithConfigurationMigrated', $tableId);
 
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableCreated', $tableId, 10);
-        $this->assertCount(1, $events);
-        $event = reset($events);
-        $this->assertArrayHasKey('params', $event);
-        $this->assertArrayHasKey('columns', $event['params']);
-        $this->assertEqualsIgnoringCase(['id', 'name'], $event['params']['columns']);
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+            $event = reset($events);
+            $this->assertArrayHasKey('params', $event);
+            $this->assertArrayHasKey('columns', $event['params']);
+            $this->assertEqualsIgnoringCase(['id', 'name'], $event['params']['columns']);
+        };
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.tableCreated', $tableId);
     }
 
     public function testTableCreateWithMeaningFullQueryAsSecond(): void
@@ -173,19 +176,23 @@ class CreateTableWithConfigurationTest extends StorageApiTestCase
         ], $table);
 
         // check events
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableWithConfigurationMigrated', $tableId, 10);
-        $this->assertCount(2, $events);
-        $event = end($events);
-        $this->assertArrayHasKey('params', $event);
-        $this->assertArrayHasKey('executedQuery', $event['params']);
-        $this->assertSame('SELECT 1', $event['params']['executedQuery']);
-        $event = prev($events);
-        $this->assertArrayHasKey('params', $event);
-        $this->assertArrayHasKey('executedQuery', $event['params']);
-        $this->assertStringContainsString('CREATE TABLE', $event['params']['executedQuery']);
+        $assertCallback = function ($events) {
+            $this->assertCount(2, $events);
+            $event = end($events);
+            $this->assertArrayHasKey('params', $event);
+            $this->assertArrayHasKey('executedQuery', $event['params']);
+            $this->assertSame('SELECT 1', $event['params']['executedQuery']);
+            $event = prev($events);
+            $this->assertArrayHasKey('params', $event);
+            $this->assertArrayHasKey('executedQuery', $event['params']);
+            $this->assertStringContainsString('CREATE TABLE', $event['params']['executedQuery']);
+        };
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.tableWithConfigurationMigrated', $tableId);
 
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableCreated', $tableId, 10);
-        $this->assertCount(1, $events);
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+        };
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.tableCreated', $tableId);
     }
 
     public function testTableCreateWithToothLessQuery(): void
@@ -213,9 +220,11 @@ class CreateTableWithConfigurationTest extends StorageApiTestCase
             $configurationOptions
         );
 
-        // check events
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableWithConfigurationMigrated', null, 10);
-        $this->assertCount(1, $events);
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+        };
+        $objectId = $this->getTestBucketId() . '.custom-table-1';
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.tableWithConfigurationMigrated', $objectId);
 
         $this->expectExceptionMessage('There were no events');
         $this->listEventsFilteredByName($this->client, 'storage.tableCreated', null, 10);
@@ -321,22 +330,31 @@ class CreateTableWithConfigurationTest extends StorageApiTestCase
         }
 
         // check events
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableWithConfigurationMigrated', null, 10);
-        $this->assertCount(1, $events);
-        $event = reset($events);
-        $this->assertArrayHasKey('params', $event);
-        $this->assertArrayHasKey('executedQuery', $event['params']);
-        $this->assertStringContainsString('CREATE TABLE', $event['params']['executedQuery']);
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+            $event = reset($events);
+            $this->assertArrayHasKey('params', $event);
+            $this->assertArrayHasKey('executedQuery', $event['params']);
+            $this->assertStringContainsString('CREATE TABLE', $event['params']['executedQuery']);
+        };
+        $objectId = $this->getTestBucketId() . '.custom-table-1';
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.tableWithConfigurationMigrated', $objectId);
 
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableWithConfigurationMigrationFailed', null, 10);
-        $this->assertCount(1, $events);
-        $event = reset($events);
-        $this->assertArrayHasKey('params', $event);
-        $this->assertArrayHasKey('executedQuery', $event['params']);
-        $this->assertSame('ASD', $event['params']['executedQuery']);
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+            $event = reset($events);
+            $this->assertArrayHasKey('params', $event);
+            $this->assertArrayHasKey('executedQuery', $event['params']);
+            $this->assertSame('ASD', $event['params']['executedQuery']);
+        };
+        $objectId = $this->getTestBucketId() . '.custom-table-1';
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.tableWithConfigurationMigrationFailed', $objectId);
 
-        $events = $this->listEventsFilteredByName($this->client, 'storage.tableCreated', null, 10);
-        $this->assertCount(1, $events);
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+        };
+        $objectId = $this->getTestBucketId() . '.custom-table-1';
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.tableWithConfigurationMigrationFailed', $objectId);
     }
 
     public function testCreateAndDeleteTableWithMigration(): void

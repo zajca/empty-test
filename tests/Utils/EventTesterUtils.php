@@ -94,6 +94,30 @@ trait EventTesterUtils
         });
     }
 
+    public function assertEventWithRetries(Client $client, callable $assertCallback, string $eventName, ?string $objectId = null)
+    {
+        $query = sprintf(
+            'token.id:%s AND event:%s',
+            $this->tokenId,
+            $eventName
+        );
+
+        if ($objectId !== null) {
+            $query .= sprintf(
+                ' AND objectId:%s',
+                $objectId
+            );
+        }
+
+        $apiCall = fn() => $client->listEvents([
+                'sinceId' => $this->lastEventId,
+                'limit' => 10,
+                'q' => $query,
+            ]);
+
+        $this->retryWithCallback($apiCall, $assertCallback);
+    }
+
     /**
      * @param int|string|null $expectedObjectId
      */

@@ -66,6 +66,7 @@ class DevBranchesTest extends StorageApiTestCase
 
     public function testBranchCreateAndDelete(): void
     {
+        $this->initEvents($this->_client);
         $token = $this->_client->verifyToken();
         $branches = new DevBranches($this->_client);
 
@@ -91,12 +92,12 @@ class DevBranchesTest extends StorageApiTestCase
         $branchId = $branch['id'];
 
         // event is created for created branch
-        $event = $this->findLastEvent($this->_client, [
-            'event' => 'storage.devBranchCreated',
-            'objectId' => $branchId,
-        ]);
-        $this->assertSame($branchName . '-original', $event['objectName']);
-        $this->assertSame('devBranch', $event['objectType']);
+        $assertCallback = function ($events) use ($branchName) {
+            $this->assertCount(1, $events);
+            $this->assertSame($branchName . '-original', $events[0]['objectName']);
+            $this->assertSame('devBranch', $events[0]['objectType']);
+        };
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.devBranchCreated', $branchId);
 
         // update name and description
         $branch = $branches->updateBranch($branchId, $branchName, $branchDescription);
@@ -104,13 +105,13 @@ class DevBranchesTest extends StorageApiTestCase
         $this->assertSame($branchDescription, $branch['description']);
 
         // event is created for updated branch
-        $event = $this->findLastEvent($this->_client, [
-            'event' => 'storage.devBranchUpdated',
-            'objectId' => $branchId,
-        ]);
-        $this->assertSame($branchName . '-original', $event['objectName']);
-        $this->assertSame('devBranch', $event['objectType']);
-        $this->assertSame($branchName, $event['params']['devBranchName']);
+        $assertCallback = function ($events) use ($branchName) {
+            $this->assertCount(1, $events);
+            $this->assertSame($branchName . '-original', $events[0]['objectName']);
+            $this->assertSame('devBranch', $events[0]['objectType']);
+            $this->assertSame($branchName, $events[0]['params']['devBranchName']);
+        };
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.devBranchUpdated', $branchId);
 
         // can get branch detail
         $branchFromDetail = $branches->getBranch($branchId);
@@ -159,10 +160,10 @@ class DevBranchesTest extends StorageApiTestCase
         $branches->deleteBranch($branchId);
 
         // there is event for deleted branch
-        $this->findLastEvent($this->_client, [
-            'event' => 'storage.devBranchDeleted',
-            'objectId' => $branchId,
-        ]);
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+        };
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.devBranchDeleted', $branchId);
 
         // cannot delete nonexistent branch
         try {
