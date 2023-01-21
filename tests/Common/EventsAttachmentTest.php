@@ -23,6 +23,7 @@ class EventsAttachmentTest extends StorageApiTestCase
 
     public function testImportEventAttachment(): void
     {
+        $this->initEvents($this->_client);
         $runId = $this->_client->generateRunId();
         $this->_client->setRunId($runId);
 
@@ -30,15 +31,12 @@ class EventsAttachmentTest extends StorageApiTestCase
         $table1Id = $this->_client->createTable($this->getTestBucketId(self::STAGE_IN), 'languages', new CsvFile($importFile));
         $this->_client->writeTableAsync($table1Id, new CsvFile($importFile));
 
-        // block until async events are processed, processing in order is not guaranteed but it should work most of time
-        $this->createAndWaitForEvent((new \Keboola\StorageApi\Event())->setComponent('dummy')->setMessage('dummy'));
-
-        $events = $this->_client->listEvents([
-            'runId' => $runId,
-        ]);
-
-        $importEvent = $events[1];
-        $this->assertEquals('storage.tableImportDone', $importEvent['event']);
-        $this->assertCount(1, $importEvent['attachments']);
+        $assertCallback = function ($events) {
+            $this->assertCount(2, $events);
+            $importEvent = $events[1];
+            $this->assertEquals('storage.tableImportDone', $importEvent['event']);
+            $this->assertCount(1, $importEvent['attachments']);
+        };
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.tableImportDone', null, null, null, $runId);
     }
 }
