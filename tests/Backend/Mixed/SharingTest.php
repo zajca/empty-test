@@ -101,6 +101,8 @@ class SharingTest extends StorageApiSharingTestCase
     /** @dataProvider syncAsyncProvider */
     public function testOrganizationPublicSharing($isAsync): void
     {
+        $this->initEvents($this->_client2);
+
         $this->initTestBuckets(self::BACKEND_SNOWFLAKE);
         $bucketId = reset($this->_bucketIds);
 
@@ -283,6 +285,7 @@ class SharingTest extends StorageApiSharingTestCase
             );
         }
 
+        /** @var string $linkedBucketId */
         $linkedBucketId = $client->linkBucket(
             'organization-project-test',
             self::STAGE_IN,
@@ -296,19 +299,30 @@ class SharingTest extends StorageApiSharingTestCase
 
         $this->_client->forceUnlinkBucket($bucketId, $linkedBucketProjectId);
 
-        $this->createAndWaitForEvent((new \Keboola\StorageApi\Event())->setComponent('dummy')->setMessage('dummy'));
-        $events = $this->_client2->listEvents([
-            'limit' => 1,
-            'q' => 'objectId:' . $linkedBucketId . ' AND objectType:bucket AND project.id:' . $linkedBucketProjectId,
-        ]);
-
-        $this->assertSame('storage.bucketForceUnlinked', $events[0]['event']);
+        $client = $this->_client2;
+        $this->retryWithCallback(function () use ($client, $linkedBucketId, $linkedBucketProjectId) {
+            return $client->listEvents([
+                'sinceId' => $this->lastEventId,
+                'limit' => 1,
+                'q' => sprintf(
+                    'event:%s AND objectId:%s AND objectType:%s AND project.id:%s',
+                    'storage.bucketForceUnlinked',
+                    $linkedBucketId,
+                    'bucket',
+                    $linkedBucketProjectId
+                ),
+            ]);
+        }, function ($events) {
+            $this->assertCount(1, $events);
+            $this->assertSame('storage.bucketForceUnlinked', $events[0]['event']);
+        });
 
         $bucket = $this->_client->getBucket($bucketId);
         $this->assertArrayHasKey('linkedBy', $bucket);
         $this->assertCount(1, $bucket['linkedBy']);
         $this->assertFalse($client->bucketExists($linkedBucketId));
 
+        /** @var string $linkedBucketId */
         $linkedBucketId = $client->linkBucket(
             'organization-project-test',
             self::STAGE_IN,
@@ -322,13 +336,23 @@ class SharingTest extends StorageApiSharingTestCase
 
         $this->_client->forceUnlinkBucket($bucketId, $linkedBucketProjectId, ['async' => true]);
 
-        $this->createAndWaitForEvent((new \Keboola\StorageApi\Event())->setComponent('dummy')->setMessage('dummy'));
-        $events = $this->_client2->listEvents([
-            'limit' => 1,
-            'q' => 'objectId:' . $linkedBucketId . ' AND objectType:bucket AND project.id:' . $linkedBucketProjectId,
-        ]);
-
-        $this->assertSame('storage.bucketForceUnlinked', $events[0]['event']);
+        $client = $this->_client2;
+        $this->retryWithCallback(function () use ($client, $linkedBucketId, $linkedBucketProjectId) {
+            return $client->listEvents([
+                'sinceId' => $this->lastEventId,
+                'limit' => 1,
+                'q' => sprintf(
+                    'event:%s AND objectId:%s AND objectType:%s AND project.id:%s',
+                    'storage.bucketForceUnlinked',
+                    $linkedBucketId,
+                    'bucket',
+                    $linkedBucketProjectId
+                ),
+            ]);
+        }, function ($events) {
+            $this->assertCount(1, $events);
+            $this->assertSame('storage.bucketForceUnlinked', $events[0]['event']);
+        });
 
         $bucket = $this->_client->getBucket($bucketId);
         $this->assertArrayHasKey('linkedBy', $bucket);

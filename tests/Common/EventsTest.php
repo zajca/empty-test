@@ -212,11 +212,23 @@ class EventsTest extends StorageApiTestCase
 
     public function testEventList(): void
     {
+        $this->initEvents($this->_client);
         // at least one event should be generated
         $this->_client->listBuckets();
 
-        $events = $this->_client->listEvents(1);
-        $this->assertCount(1, $events);
+        $client = $this->_client;
+        $this->retryWithCallback(function () use ($client) {
+            return $client->listEvents([
+                'sinceId' => $this->lastEventId,
+                'limit' => 10,
+                'q' => sprintf(
+                    'token.id:%s',
+                    $this->tokenId
+                ),
+            ]);
+        }, function ($events) {
+            $this->assertCount(1, $events);
+        });
     }
 
     public function testEventsFiltering(): void
@@ -246,27 +258,38 @@ class EventsTest extends StorageApiTestCase
         $event->setMessage('another');
         $this->createAndWaitForEvent($event);
 
-        $events = $this->_client->listEvents([
-            'sinceId' => $lastEventId,
-            'runId' => $runId,
-        ]);
+        $client = $this->_client;
+        $this->retryWithCallback(function () use ($client, $lastEventId, $runId) {
+            return $client->listEvents([
+                'sinceId' => $lastEventId,
+                'runId' => $runId,
+            ]);
+        }, function ($events) {
+            $this->assertCount(3, $events);
+        });
 
-        $this->assertCount(3, $events);
-
-        $events = $this->_client->listEvents([
-            'sinceId' => $lastEventId,
-            'component' => 'transformation',
-        ]);
-        $this->assertCount(1, $events, 'filter by component');
+        $client = $this->_client;
+        $this->retryWithCallback(function () use ($client, $lastEventId) {
+            return $client->listEvents([
+                'sinceId' => $lastEventId,
+                'component' => 'transformation',
+            ]);
+        }, function ($events) {
+            $this->assertCount(1, $events, 'filter by component');
+        });
 
         $event->setRunId('rundId2');
         $this->createAndWaitForEvent($event);
 
-        $events = $this->_client->listEvents([
-            'sinceId' => $lastEventId,
-            'runId' => $runId,
-        ]);
-        $this->assertCount(3, $events);
+        $client = $this->_client;
+        $this->retryWithCallback(function () use ($client, $lastEventId, $runId) {
+            return $client->listEvents([
+                'sinceId' => $lastEventId,
+                'runId' => $runId,
+            ]);
+        }, function ($events) {
+            $this->assertCount(3, $events);
+        });
     }
 
     public function testEventsSearch(): void

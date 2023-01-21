@@ -62,6 +62,8 @@ class SharingTest extends StorageApiSharingTestCase
         $workspaceBackend,
         $expectedLoadType
     ): void {
+        $this->initEvents($this->_client2);
+
         //setup test tables
         $this->deleteAllWorkspaces();
         $this->initTestBuckets($sharingBackend);
@@ -158,17 +160,24 @@ class SharingTest extends StorageApiSharingTestCase
 
         $workspaces->loadWorkspaceData($workspace['id'], ['input' => $input]);
 
-        $this->createAndWaitForEvent(
-            (new \Keboola\StorageApi\Event())->setComponent('dummy')->setMessage('dummy'),
-            $this->_client2
-        );
-
-        $events = $this->_client2->listEvents(['runId' => $runId, 'q' => 'storage.workspaceLoaded',]);
-        self::assertCount(3, $events);
-
-        foreach ($events as $event) {
-            self::assertSame($expectedLoadType, $event['results']['loadType']);
-        }
+        $client = $this->_client2;
+        $this->retryWithCallback(function () use ($client, $runId) {
+            return $client->listEvents([
+                'sinceId' => $this->lastEventId,
+                'limit' => 10,
+                'q' => sprintf(
+                    'token.id:%s AND event:%s AND runId:%s',
+                    $this->tokenId,
+                    'storage.workspaceLoaded',
+                    $runId
+                ),
+            ]);
+        }, function ($events) use ($expectedLoadType) {
+            $this->assertCount(3, $events);
+            foreach ($events as $event) {
+                self::assertSame($expectedLoadType, $event['results']['loadType']);
+            }
+        });
 
         $afterJobs = $this->_client2->listJobs();
 
@@ -219,14 +228,22 @@ class SharingTest extends StorageApiSharingTestCase
         $mapping3 = ['source' => str_replace($bucketId, $linkedId, $table3Id), 'destination' => 'table3'];
         $workspaces->loadWorkspaceData($workspace['id'], ['input' => [$mapping3], 'preserve' => true]);
 
-        $this->createAndWaitForEvent(
-            (new \Keboola\StorageApi\Event())->setComponent('dummy')->setMessage('dummy'),
-            $this->_client2
-        );
-
-        $events = $this->_client2->listEvents(['runId' => $runId, 'q' => 'storage.workspaceLoaded',]);
-        self::assertCount(1, $events);
-        self::assertSame($expectedLoadType, $events[0]['results']['loadType']);
+        $client = $this->_client2;
+        $this->retryWithCallback(function () use ($client, $runId) {
+            return $client->listEvents([
+                'sinceId' => $this->lastEventId,
+                'limit' => 10,
+                'q' => sprintf(
+                    'token.id:%s AND event:%s AND runId:%s',
+                    $this->tokenId,
+                    'storage.workspaceLoaded',
+                    $runId
+                ),
+            ]);
+        }, function ($events) use ($expectedLoadType) {
+            self::assertCount(1, $events);
+            self::assertSame($expectedLoadType, $events[0]['results']['loadType']);
+        });
 
         $tables = $backend->getTables();
 
@@ -242,14 +259,22 @@ class SharingTest extends StorageApiSharingTestCase
 
         $workspaces->loadWorkspaceData($workspace['id'], ['input' => [$mapping3]]);
 
-        $this->createAndWaitForEvent(
-            (new \Keboola\StorageApi\Event())->setComponent('dummy')->setMessage('dummy'),
-            $this->_client2
-        );
-
-        $events = $this->_client2->listEvents(['runId' => $runId, 'q' => 'storage.workspaceLoaded',]);
-        self::assertCount(1, $events);
-        self::assertSame($expectedLoadType, $events[0]['results']['loadType']);
+        $client = $this->_client2;
+        $this->retryWithCallback(function () use ($client, $runId) {
+            return $client->listEvents([
+                'sinceId' => $this->lastEventId,
+                'limit' => 100,
+                'q' => sprintf(
+                    'token.id:%s AND event:%s AND runId:%s',
+                    $this->tokenId,
+                    'storage.workspaceLoaded',
+                    $runId
+                ),
+            ]);
+        }, function ($events) use ($expectedLoadType) {
+            self::assertCount(1, $events);
+            self::assertSame($expectedLoadType, $events[0]['results']['loadType']);
+        });
 
         $tables = $backend->getTables();
         self::assertCount(1, $tables);

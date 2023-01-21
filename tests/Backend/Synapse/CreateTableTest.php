@@ -141,6 +141,8 @@ class CreateTableTest extends StorageApiTestCase
 
     public function testCreateTableDefinition(): void
     {
+        $this->initEvents($this->_client);
+
         $bucketId = $this->getTestBucketId(self::STAGE_IN);
 
         $runId = $this->_client->generateRunId();
@@ -148,50 +150,58 @@ class CreateTableTest extends StorageApiTestCase
 
         $tableId = $this->_client->createTableDefinition($bucketId, self::TABLE_DEFINITION);
 
-        // block until async events are processed, processing in order is not guaranteed but it should work most of time
-        $this->createAndWaitForEvent((new \Keboola\StorageApi\Event())->setComponent('dummy')->setMessage('dummy'));
-
         //check that the job has started
-        $events = $this->_client->listEvents([
-            'runId' => $runId,
-        ]);
+        $client = $this->_client;
+        $this->retryWithCallback(function () use ($client, $runId) {
+            return $client->listEvents([
+                'sinceId' => $this->lastEventId,
+                'limit' => 10,
+                'q' => sprintf(
+                    'token.id:%s AND event:%s AND runId:%s',
+                    $this->tokenId,
+                    'storage.tableCreated',
+                    $runId
+                ),
+            ]);
+        }, function ($events) use ($runId) {
+            $this->assertCount(1, $events);
+            $workspaceCreatedEvent = array_pop($events);
+            $this->assertSame($runId, $workspaceCreatedEvent['runId']);
+            $this->assertSame('storage.tableCreated', $workspaceCreatedEvent['event']);
+            $this->assertSame('storage', $workspaceCreatedEvent['component']);
 
-        $workspaceCreatedEvent = array_pop($events);
-        $this->assertSame($runId, $workspaceCreatedEvent['runId']);
-        $this->assertSame('storage.tableCreated', $workspaceCreatedEvent['event']);
-        $this->assertSame('storage', $workspaceCreatedEvent['component']);
+            // event params validation
+            $eventParams = $workspaceCreatedEvent['params'];
 
-        // event params validation
-        $eventParams = $workspaceCreatedEvent['params'];
-
-        $this->assertSame(['id'], $eventParams['primaryKey']);
-        $this->assertSame(
-            [
-                'id',
-                'name',
-            ],
-            $eventParams['columns']
-        );
-        $this->assertSame(
-            [
-                'id' => [
-                    'type' => 'INT',
-                    'length' => null,
-                    'nullable' => true,
+            $this->assertSame(['id'], $eventParams['primaryKey']);
+            $this->assertSame(
+                [
+                    'id',
+                    'name',
                 ],
-                'name' => [
-                    'type' => 'NVARCHAR',
-                    'length' => null,
-                    'nullable' => true,
+                $eventParams['columns']
+            );
+            $this->assertSame(
+                [
+                    'id' => [
+                        'type' => 'INT',
+                        'length' => null,
+                        'nullable' => true,
+                    ],
+                    'name' => [
+                        'type' => 'NVARCHAR',
+                        'length' => null,
+                        'nullable' => true,
+                    ],
                 ],
-            ],
-            $eventParams['columnsTypes']
-        );
-        $this->assertFalse($eventParams['syntheticPrimaryKeyEnabled']);
-        $this->assertSame(['id'], $eventParams['distributionKey']);
-        $this->assertSame('HASH', $eventParams['distribution']);
-        $this->assertSame('CLUSTERED INDEX', $eventParams['indexType']);
-        $this->assertSame(['id'], $eventParams['indexKey']);
+                $eventParams['columnsTypes']
+            );
+            $this->assertFalse($eventParams['syntheticPrimaryKeyEnabled']);
+            $this->assertSame(['id'], $eventParams['distributionKey']);
+            $this->assertSame('HASH', $eventParams['distribution']);
+            $this->assertSame('CLUSTERED INDEX', $eventParams['indexType']);
+            $this->assertSame(['id'], $eventParams['indexKey']);
+        });
 
         // table properties validation
         $table = $this->_client->getTable($tableId);
@@ -227,6 +237,8 @@ class CreateTableTest extends StorageApiTestCase
 
     public function testCreateTableDefinitionNoPrimaryKey(): void
     {
+        $this->initEvents($this->_client);
+
         $bucketId = $this->getTestBucketId(self::STAGE_IN);
 
         $runId = $this->_client->generateRunId();
@@ -252,26 +264,33 @@ class CreateTableTest extends StorageApiTestCase
 
         $this->_client->createTableDefinition($bucketId, $definition);
 
-        // block until async events are processed, processing in order is not guaranteed but it should work most of time
-        $this->createAndWaitForEvent((new \Keboola\StorageApi\Event())->setComponent('dummy')->setMessage('dummy'));
+        $client = $this->_client;
+        $this->retryWithCallback(function () use ($client, $runId) {
+            return $client->listEvents([
+                'sinceId' => $this->lastEventId,
+                'limit' => 10,
+                'q' => sprintf(
+                    'token.id:%s AND event:%s AND runId:%s',
+                    $this->tokenId,
+                    'storage.tableCreated',
+                    $runId
+                ),
+            ]);
+        }, function ($events) use ($runId) {
+            $this->assertCount(1, $events);
+            $workspaceCreatedEvent = array_pop($events);
+            self::assertSame($runId, $workspaceCreatedEvent['runId']);
+            self::assertSame('storage.tableCreated', $workspaceCreatedEvent['event']);
+            self::assertSame('storage', $workspaceCreatedEvent['component']);
 
-        //check that the job has started
-        $events = $this->_client->listEvents([
-            'runId' => $runId,
-        ]);
+            // event params validation
+            $eventParams = $workspaceCreatedEvent['params'];
 
-        $workspaceCreatedEvent = array_pop($events);
-        self::assertSame($runId, $workspaceCreatedEvent['runId']);
-        self::assertSame('storage.tableCreated', $workspaceCreatedEvent['event']);
-        self::assertSame('storage', $workspaceCreatedEvent['component']);
-
-        // event params validation
-        $eventParams = $workspaceCreatedEvent['params'];
-
-        // empty PK's
-        self::assertSame([], $eventParams['primaryKey']);
-        self::assertSame([], $eventParams['distributionKey']);
-        self::assertSame('ROUND_ROBIN', $eventParams['distribution']);
+            // empty PK's
+            self::assertSame([], $eventParams['primaryKey']);
+            self::assertSame([], $eventParams['distributionKey']);
+            self::assertSame('ROUND_ROBIN', $eventParams['distribution']);
+        });
     }
 
     public function testColumnTypesInTableDefinition(): void
