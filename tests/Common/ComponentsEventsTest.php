@@ -74,7 +74,6 @@ class ComponentsEventsTest extends StorageApiTestCase
         // test no change
         $components->updateConfiguration($config);
 
-        // make sure that later events are already handled
         $this->createAndWaitForEvent((new \Keboola\StorageApi\Event())->setComponent('dummy')->setMessage('dummy'));
 
         // wait for event or will fail
@@ -88,21 +87,24 @@ class ComponentsEventsTest extends StorageApiTestCase
         $config->setDescription('new desc');
         $components->updateConfiguration($config);
 
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationChanged');
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationChanged',
-            'Changed component configuration "component-events-test" (wr-db)',
-            $this->configurationId,
-            'component-events-test',
-            'componentConfiguration',
-            [
-                'component' => 'wr-db',
-                'configurationId' => $this->configurationId,
-                'name' => 'component-events-test',
-                'version' => 2,
-            ]
-        );
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationChanged',
+                'Changed component configuration "component-events-test" (wr-db)',
+                $this->configurationId,
+                'component-events-test',
+                'componentConfiguration',
+                [
+                    'component' => 'wr-db',
+                    'configurationId' => $this->configurationId,
+                    'name' => 'component-events-test',
+                    'version' => 2,
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationChanged');
     }
 
     /**
@@ -128,41 +130,47 @@ class ComponentsEventsTest extends StorageApiTestCase
         $components->addConfiguration($config);
 
         // check create event
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationCreated');
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationCreated',
-            'Created component configuration "component-events-test" (wr-db)',
-            $config->getConfigurationId(),
-            'component-events-test',
-            'componentConfiguration',
-            [
-                'component' => 'wr-db',
-                'configurationId' => $config->getConfigurationId(),
-                'name' => 'component-events-test',
-                'version' => 1,
-            ]
-        );
+        $assertCallback = function ($events) use ($config) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationCreated',
+                'Created component configuration "component-events-test" (wr-db)',
+                $config->getConfigurationId(),
+                'component-events-test',
+                'componentConfiguration',
+                [
+                    'component' => 'wr-db',
+                    'configurationId' => $config->getConfigurationId(),
+                    'name' => 'component-events-test',
+                    'version' => 1,
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationCreated');
 
         // check restore event on create action
         $components->deleteConfiguration(self::COMPONENT_ID, $this->configurationId);
         $components->addConfiguration($this->getConfiguration());
 
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationRestored');
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationRestored',
-            'Restored component configuration "component-events-test" (wr-db)',
-            $this->configurationId,
-            'component-events-test',
-            'componentConfiguration',
-            [
-                'component' => 'wr-db',
-                'configurationId' => $this->configurationId,
-                'name' => 'component-events-test',
-                'version' => 3,
-            ]
-        );
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationRestored',
+                'Restored component configuration "component-events-test" (wr-db)',
+                $this->configurationId,
+                'component-events-test',
+                'componentConfiguration',
+                [
+                    'component' => 'wr-db',
+                    'configurationId' => $this->configurationId,
+                    'name' => 'component-events-test',
+                    'version' => 3,
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationRestored');
     }
 
     /**
@@ -178,21 +186,25 @@ class ComponentsEventsTest extends StorageApiTestCase
 
         // delete
         $components->deleteConfiguration(self::COMPONENT_ID, $this->configurationId);
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationDeleted', $this->configurationId);
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationDeleted',
-            'Deleted component configuration "component-events-test" (wr-db)',
-            $this->configurationId,
-            'component-events-test',
-            'componentConfiguration',
-            [
-                'component' => 'wr-db',
-                'configurationId' => $this->configurationId,
-                'name' => 'component-events-test',
-                'version' => 2,
-            ]
-        );
+
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationDeleted',
+                'Deleted component configuration "component-events-test" (wr-db)',
+                $this->configurationId,
+                'component-events-test',
+                'componentConfiguration',
+                [
+                    'component' => 'wr-db',
+                    'configurationId' => $this->configurationId,
+                    'name' => 'component-events-test',
+                    'version' => 2,
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationDeleted');
 
         if ($clientType === ClientProvider::DEV_BRANCH) {
             $this->markTestSkipped('Deleting configuration from trash is not allowed in development branches.');
@@ -200,21 +212,24 @@ class ComponentsEventsTest extends StorageApiTestCase
 
         // purge
         $components->deleteConfiguration(self::COMPONENT_ID, $this->configurationId);
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationPurged', $this->configurationId);
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationPurged',
-            'Permanently deleted component configuration "component-events-test" (wr-db)',
-            $this->configurationId,
-            'component-events-test',
-            'componentConfiguration',
-            [
-                'component' => 'wr-db',
-                'configurationId' => $this->configurationId,
-                'name' => 'component-events-test',
-                'version' => 2,
-            ]
-        );
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationPurged',
+                'Permanently deleted component configuration "component-events-test" (wr-db)',
+                $this->configurationId,
+                'component-events-test',
+                'componentConfiguration',
+                [
+                    'component' => 'wr-db',
+                    'configurationId' => $this->configurationId,
+                    'name' => 'component-events-test',
+                    'version' => 2,
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationPurged');
     }
 
     /**
@@ -229,22 +244,24 @@ class ComponentsEventsTest extends StorageApiTestCase
         $components->deleteConfiguration(self::COMPONENT_ID, $this->configurationId);
 
         $components->restoreComponentConfiguration(self::COMPONENT_ID, $this->configurationId);
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationRestored');
-
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationRestored',
-            'Restored component configuration "component-events-test" (wr-db)',
-            $this->configurationId,
-            'component-events-test',
-            'componentConfiguration',
-            [
-                'component' => 'wr-db',
-                'configurationId' => $this->configurationId,
-                'name' => 'component-events-test',
-                'version' => 3,
-            ]
-        );
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationRestored',
+                'Restored component configuration "component-events-test" (wr-db)',
+                $this->configurationId,
+                'component-events-test',
+                'componentConfiguration',
+                [
+                    'component' => 'wr-db',
+                    'configurationId' => $this->configurationId,
+                    'name' => 'component-events-test',
+                    'version' => 3,
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationRestored');
     }
 
     /**
@@ -264,27 +281,30 @@ class ComponentsEventsTest extends StorageApiTestCase
             'new'
         );
 
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationCopied');
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationCopied',
-            'Copied component configuration "component-events-test" to "new" (wr-db)',
-            $newConfig['id'],
-            'new',
-            'componentConfiguration',
-            [
-                'component' => 'wr-db',
-                'configurationId' => $newConfig['id'],
-                'name' => 'new',
-                'version' => 1,
-                'sourceConfiguration' => [
+        $assertCallback = function ($events) use ($newConfig) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationCopied',
+                'Copied component configuration "component-events-test" to "new" (wr-db)',
+                $newConfig['id'],
+                'new',
+                'componentConfiguration',
+                [
                     'component' => 'wr-db',
-                    'configurationId' => $this->configurationId,
-                    'name' => 'component-events-test',
+                    'configurationId' => $newConfig['id'],
+                    'name' => 'new',
                     'version' => 1,
-                ],
-            ]
-        );
+                    'sourceConfiguration' => [
+                        'component' => 'wr-db',
+                        'configurationId' => $this->configurationId,
+                        'name' => 'component-events-test',
+                        'version' => 1,
+                    ],
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationCopied');
     }
 
     /**
@@ -300,28 +320,30 @@ class ComponentsEventsTest extends StorageApiTestCase
         $components->createConfigurationFromVersion(self::COMPONENT_ID, $this->configurationId, 1, 'v2');
 
         $components->rollbackConfiguration(self::COMPONENT_ID, $this->configurationId, 1, 'rollback');
-
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationRolledBack');
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationRolledBack',
-            'Rolled back component configuration "component-events-test" (wr-db)',
-            $this->configurationId,
-            'component-events-test',
-            'componentConfiguration',
-            [
-                'component' => 'wr-db',
-                'configurationId' => $this->configurationId,
-                'name' => 'component-events-test',
-                'version' => 2,
-                'sourceConfiguration' => [
+        $assertCallback = function ($events) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationRolledBack',
+                'Rolled back component configuration "component-events-test" (wr-db)',
+                $this->configurationId,
+                'component-events-test',
+                'componentConfiguration',
+                [
                     'component' => 'wr-db',
                     'configurationId' => $this->configurationId,
                     'name' => 'component-events-test',
-                    'version' => 1,
-                ],
-            ]
-        );
+                    'version' => 2,
+                    'sourceConfiguration' => [
+                        'component' => 'wr-db',
+                        'configurationId' => $this->configurationId,
+                        'name' => 'component-events-test',
+                        'version' => 1,
+                    ],
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationRolledBack');
     }
 
     /**
@@ -339,26 +361,29 @@ class ComponentsEventsTest extends StorageApiTestCase
         $rowOptions->setDescription('desc2');
         $rowResponse = $components->updateConfigurationRow($rowOptions);
 
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationRowChanged');
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationRowChanged',
-            'Changed component configuration row "rowName" (wr-db)',
-            $rowResponse['id'],
-            'rowName',
-            'componentConfigurationRow',
-            [
-                'rowId' => $rowResponse['id'],
-                'name' => 'rowName',
-                'version' => 2,
-                'configuration' => [
-                    'component' => 'wr-db',
-                    'configurationId' => $this->configurationId,
-                    'name' => 'component-events-test',
-                    'version' => 3,
-                ],
-            ]
-        );
+        $assertCallback = function ($events) use ($rowResponse) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationRowChanged',
+                'Changed component configuration row "rowName" (wr-db)',
+                $rowResponse['id'],
+                'rowName',
+                'componentConfigurationRow',
+                [
+                    'rowId' => $rowResponse['id'],
+                    'name' => 'rowName',
+                    'version' => 2,
+                    'configuration' => [
+                        'component' => 'wr-db',
+                        'configurationId' => $this->configurationId,
+                        'name' => 'component-events-test',
+                        'version' => 3,
+                    ],
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationRowChanged');
     }
 
     /**
@@ -387,26 +412,29 @@ class ComponentsEventsTest extends StorageApiTestCase
         $rowOptions = $this->getConfigRowOptions();
         $rowResponse = $components->addConfigurationRow($rowOptions);
 
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationRowCreated');
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationRowCreated',
-            'Created component configuration row "rowName" (wr-db)',
-            $rowResponse['id'],
-            'rowName',
-            'componentConfigurationRow',
-            [
-                'rowId' => $rowResponse['id'],
-                'name' => 'rowName',
-                'version' => 1,
-                'configuration' => [
-                    'component' => 'wr-db',
-                    'configurationId' => $this->configurationId,
-                    'name' => 'component-events-test',
-                    'version' => 2,
-                ],
-            ]
-        );
+        $assertCallback = function ($events) use ($rowResponse) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationRowCreated',
+                'Created component configuration row "rowName" (wr-db)',
+                $rowResponse['id'],
+                'rowName',
+                'componentConfigurationRow',
+                [
+                    'rowId' => $rowResponse['id'],
+                    'name' => 'rowName',
+                    'version' => 1,
+                    'configuration' => [
+                        'component' => 'wr-db',
+                        'configurationId' => $this->configurationId,
+                        'name' => 'component-events-test',
+                        'version' => 2,
+                    ],
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationRowCreated');
     }
 
     /**
@@ -424,26 +452,29 @@ class ComponentsEventsTest extends StorageApiTestCase
 
         $components->deleteConfigurationRow(self::COMPONENT_ID, $this->configurationId, $rowOptions->getRowId());
 
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationRowDeleted');
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationRowDeleted',
-            'Deleted component configuration row "rowName" (wr-db)',
-            $rowResponse['id'],
-            'rowName',
-            'componentConfigurationRow',
-            [
-                'rowId' => $rowResponse['id'],
-                'name' => 'rowName',
-                'version' => 1,
-                'configuration' => [
-                    'component' => 'wr-db',
-                    'configurationId' => $this->configurationId,
-                    'name' => 'component-events-test',
-                    'version' => 3,
-                ],
-            ]
-        );
+        $assertCallback = function ($events) use ($rowResponse) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationRowDeleted',
+                'Deleted component configuration row "rowName" (wr-db)',
+                $rowResponse['id'],
+                'rowName',
+                'componentConfigurationRow',
+                [
+                    'rowId' => $rowResponse['id'],
+                    'name' => 'rowName',
+                    'version' => 1,
+                    'configuration' => [
+                        'component' => 'wr-db',
+                        'configurationId' => $this->configurationId,
+                        'name' => 'component-events-test',
+                        'version' => 3,
+                    ],
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationRowDeleted');
     }
 
     /**
@@ -465,38 +496,40 @@ class ComponentsEventsTest extends StorageApiTestCase
             $rowOptions->getRowId(),
             1
         );
-
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationRowCopied');
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationRowCopied',
-            'Copied component configuration row "rowName" (wr-db)',
-            $rowResponse['id'],
-            'rowName',
-            'componentConfigurationRow',
-            [
-                'rowId' => $rowResponse['id'],
-                'name' => 'rowName',
-                'version' => 1,
-                'configuration' => [
-                    'component' => 'wr-db',
-                    'configurationId' => $config->getConfigurationId(),
-                    'name' => 'component-events-test',
-                    'version' => 3,
-                ],
-                'sourceRow' => [
-                    'rowId' => $sourceRowResponse['id'],
+        $assertCallback = function ($events) use ($rowResponse, $config, $sourceRowResponse) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationRowCopied',
+                'Copied component configuration row "rowName" (wr-db)',
+                $rowResponse['id'],
+                'rowName',
+                'componentConfigurationRow',
+                [
+                    'rowId' => $rowResponse['id'],
                     'name' => 'rowName',
                     'version' => 1,
                     'configuration' => [
                         'component' => 'wr-db',
                         'configurationId' => $config->getConfigurationId(),
                         'name' => 'component-events-test',
-                        'version' => 2,
+                        'version' => 3,
                     ],
-                ],
-            ]
-        );
+                    'sourceRow' => [
+                        'rowId' => $sourceRowResponse['id'],
+                        'name' => 'rowName',
+                        'version' => 1,
+                        'configuration' => [
+                            'component' => 'wr-db',
+                            'configurationId' => $config->getConfigurationId(),
+                            'name' => 'component-events-test',
+                            'version' => 2,
+                        ],
+                    ],
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationRowCopied');
     }
 
     /**
@@ -526,25 +559,26 @@ class ComponentsEventsTest extends StorageApiTestCase
             1
         );
 
-        $events = $this->listEvents($this->client, 'storage.componentConfigurationRowRolledBack');
-        $this->assertEvent(
-            $events[0],
-            'storage.componentConfigurationRowRolledBack',
-            'Rolled back component configuration row "rowName" (wr-db)',
-            $rowToRollbackTo['id'],
-            'rowName',
-            'componentConfigurationRow',
-            [
-                'rowId' => $rowToRollbackTo['id'],
-                'name' => 'rowName',
-                'version' => 2,
-                'configuration' => [
-                    'component' => 'wr-db',
-                    'configurationId' => $this->configurationId,
-                    'name' => 'component-events-test',
-                    'version' => 4,
-                ],
-                'sourceRow' => [
+        $assertCallback = function ($events) use ($rowToRollbackTo) {
+            $this->assertCount(1, $events);
+            $this->assertEvent(
+                $events[0],
+                'storage.componentConfigurationRowRolledBack',
+                'Rolled back component configuration row "rowName" (wr-db)',
+                $rowToRollbackTo['id'],
+                'rowName',
+                'componentConfigurationRow',
+                [
+                    'rowId' => $rowToRollbackTo['id'],
+                    'name' => 'rowName',
+                    'version' => 2,
+                    'configuration' => [
+                        'component' => 'wr-db',
+                        'configurationId' => $this->configurationId,
+                        'name' => 'component-events-test',
+                        'version' => 4,
+                    ],
+                    'sourceRow' => [
                         'rowId' => $rowToRollbackTo['id'],
                         'name' => 'rowName',
                         'version' => 1,
@@ -554,8 +588,10 @@ class ComponentsEventsTest extends StorageApiTestCase
                             'name' => 'component-events-test',
                             'version' => 3,
                         ],
-                ],
-            ]
-        );
+                    ],
+                ]
+            );
+        };
+        $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationRowRolledBack');
     }
 }
