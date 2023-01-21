@@ -34,6 +34,8 @@ class WorkspacesTest extends ParallelWorkspacesTestCase
      */
     public function testWorkspaceCreate(bool $async): void
     {
+        $this->initEvents($this->workspaceSapiClient);
+
         $workspaces = new Workspaces($this->workspaceSapiClient);
 
         foreach ($this->listTestWorkspaces($this->_client) as $workspace) {
@@ -93,22 +95,23 @@ class WorkspacesTest extends ParallelWorkspacesTestCase
 
         $workspaces->deleteWorkspace($workspace['id'], [], true);
 
-        // block until async events are processed, processing in order is not guaranteed but it should work most of time
-        $this->createAndWaitForEvent((new \Keboola\StorageApi\Event())->setComponent('dummy')->setMessage('dummy'));
+        $assertCallback = function ($events) use ($runId) {
+            $this->assertCount(1, $events);
+            $workspaceCreatedEvent = array_pop($events);
+            $this->assertSame($runId, $workspaceCreatedEvent['runId']);
+            $this->assertSame('storage.workspaceCreated', $workspaceCreatedEvent['event']);
+            $this->assertSame('storage', $workspaceCreatedEvent['component']);
+        };
+        $this->assertEventWithRetries($this->workspaceSapiClient, $assertCallback, 'storage.workspaceCreated', null, null, null, $runId);
 
-        $events = $this->_client->listEvents([
-            'runId' => $runId,
-        ]);
-
-        $workspaceCreatedEvent = array_pop($events);
-        $this->assertSame($runId, $workspaceCreatedEvent['runId']);
-        $this->assertSame('storage.workspaceCreated', $workspaceCreatedEvent['event']);
-        $this->assertSame('storage', $workspaceCreatedEvent['component']);
-
-        $workspaceDeletedEvent = array_pop($events);
-        $this->assertSame($runId, $workspaceDeletedEvent['runId']);
-        $this->assertSame('storage.workspaceDeleted', $workspaceDeletedEvent['event']);
-        $this->assertSame('storage', $workspaceDeletedEvent['component']);
+        $assertCallback = function ($events) use ($runId) {
+            $this->assertCount(1, $events);
+            $workspaceDeletedEvent = array_pop($events);
+            $this->assertSame($runId, $workspaceDeletedEvent['runId']);
+            $this->assertSame('storage.workspaceDeleted', $workspaceDeletedEvent['event']);
+            $this->assertSame('storage', $workspaceDeletedEvent['component']);
+        };
+        $this->assertEventWithRetries($this->workspaceSapiClient, $assertCallback, 'storage.workspaceDeleted', null, null, null, $runId);
         $this->assertCredentialsShouldNotWork($connection);
     }
 
