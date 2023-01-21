@@ -94,8 +94,15 @@ trait EventTesterUtils
         });
     }
 
-    public function assertEventWithRetries(Client $client, callable $assertCallback, string $eventName, ?string $objectId = null, ?string $idBranch = null)
-    {
+    public function assertEventWithRetries(
+        Client $client,
+        callable $assertCallback,
+        string $eventName,
+        ?string $objectId = null,
+        ?string $idBranch = null,
+        ?string $component = null,
+        ?string $runId = null
+    ) {
         $query = sprintf(
             'token.id:%s AND event:%s',
             $this->tokenId,
@@ -113,6 +120,20 @@ trait EventTesterUtils
             $query .= sprintf(
                 ' AND idBranch:%s',
                 $idBranch
+            );
+        }
+
+        if ($component !== null) {
+            $query .= sprintf(
+                ' AND component:%s',
+                $component
+            );
+        }
+
+        if ($runId !== null) {
+            $query .= sprintf(
+                ' AND runId:%s',
+                $runId
             );
         }
 
