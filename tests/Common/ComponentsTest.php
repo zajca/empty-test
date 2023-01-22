@@ -1367,7 +1367,7 @@ class ComponentsTest extends StorageApiTestCase
                 $this->assertCount(1, $events);
                 $this->assertEquals($branchClient->getCurrentBranchId(), $events[0]['idBranch']);
             };
-            $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationRolledBack', null, $branchClient->getCurrentBranchId(), 'storage');
+            $this->assertEventWithRetries($this->client, $assertCallback, 'storage.componentConfigurationRolledBack', null, (string) $branchClient->getCurrentBranchId(), 'storage');
         }
 
         $rollbackedConfiguration = $componentsApi->getConfiguration('wr-db', $configurationV1['id']);
@@ -1409,6 +1409,8 @@ class ComponentsTest extends StorageApiTestCase
         $componentsApi->rollbackConfiguration('wr-db', $configurationV1['id'], 5, 'custom description');
 
         if ($clientName === ClientProvider::DEV_BRANCH) {
+            /** @var BranchAwareClient $branchClient */
+            $branchClient = $this->client;
             $assertCallback = function ($events) use ($branchClient) {
                 $this->assertCount(2, $events);
 

@@ -91,7 +91,7 @@ class BranchWorkspacesTest extends WorkspacesTest
             $this->assertSame('storage', $workspaceCreatedEvent['component']);
             $this->assertEquals($this->branchId, $workspaceCreatedEvent['idBranch']);
         };
-        $this->assertEventWithRetries($this->workspaceSapiClient, $assertCallback, 'storage.workspaceCreated', $workspace['id'], $this->branchId);
+        $this->assertEventWithRetries($this->workspaceSapiClient, $assertCallback, 'storage.workspaceCreated', (string) $workspace['id'], $this->branchId);
 
         $assertCallback = function ($events) use ($runId) {
             $this->assertCount(1, $events);
@@ -101,7 +101,7 @@ class BranchWorkspacesTest extends WorkspacesTest
             $this->assertSame('storage', $workspaceDeletedEvent['component']);
             $this->assertEquals($this->branchId, $workspaceDeletedEvent['idBranch']);
         };
-        $this->assertEventWithRetries($this->workspaceSapiClient, $assertCallback, 'storage.workspaceDeleted', $workspace['id'], $this->branchId);
+        $this->assertEventWithRetries($this->workspaceSapiClient, $assertCallback, 'storage.workspaceDeleted', (string) $workspace['id'], $this->branchId);
 
         $this->assertCredentialsShouldNotWork($connection);
     }

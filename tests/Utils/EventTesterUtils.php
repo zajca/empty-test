@@ -102,7 +102,7 @@ trait EventTesterUtils
         ?string $idBranch = null,
         ?string $component = null,
         ?string $runId = null
-    ) {
+    ): void {
         $query = sprintf(
             'token.id:%s AND event:%s',
             $this->tokenId,

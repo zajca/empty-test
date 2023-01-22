@@ -57,7 +57,7 @@ class WorkspacesTest extends FileWorkspaceTestCase
             $this->assertSame('storage.workspaceCreated', $workspaceCreatedEvent['event']);
             $this->assertSame('storage', $workspaceCreatedEvent['component']);
         };
-        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.workspaceCreated', $workspace['id'], null, 'storage');
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.workspaceCreated', (string) $workspace['id'], null, 'storage');
 
         $assertCallback = function ($events) use ($runId) {
             $this->assertCount(1, $events);
@@ -66,7 +66,7 @@ class WorkspacesTest extends FileWorkspaceTestCase
             $this->assertSame('storage.workspaceDeleted', $workspaceDeletedEvent['event']);
             $this->assertSame('storage', $workspaceDeletedEvent['component']);
         };
-        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.workspaceDeleted', $workspace['id'], null, 'storage');
+        $this->assertEventWithRetries($this->_client, $assertCallback, 'storage.workspaceDeleted', (string) $workspace['id'], null, 'storage');
 
         $backend = new Abs($connection);
         $this->expectException(ServiceException::class);
