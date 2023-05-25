@@ -97,10 +97,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -120,10 +117,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -143,10 +137,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -166,10 +157,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -189,10 +177,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -212,10 +197,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -235,10 +217,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -258,10 +237,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -281,10 +257,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -304,10 +277,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -327,10 +297,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -350,10 +317,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -373,10 +337,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -396,10 +357,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -419,10 +377,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -438,28 +393,19 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
-                'fail not quoted' => [
+                'not quoted' => [
                     'value' => 'test',
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                    'expectFail' => [],
                 ],
-                'fail wrong quoted' => [
+                'wrong quoted' => [
                     'value' => '"test"',
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                    'expectFail' => [],
                 ],
-                'fail type' => [
+                'type number' => [
                     'value' => 123,
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                    'expectFail' => [],
                 ],
             ],
             'CHAR' => [
@@ -469,22 +415,19 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
-                'fail not quoted' => [
-                    'value' => 'T',
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                'not quoted' => [
+                    'value' => 'test',
+                    'expectFail' => [],
                 ],
-                'fail type' => [
-                    'value' => 123,
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                'wrong quoted' => [
+                    'value' => '"test"',
+                    'expectFail' => [],
+                ],
+                'type number' => [
+                    'value' => 1,
+                    'expectFail' => [],
                 ],
             ],
             'CHARACTER' => [
@@ -494,22 +437,19 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
-                'fail not quoted' => [
-                    'value' => 'T',
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                'not quoted' => [
+                    'value' => 'test',
+                    'expectFail' => [],
                 ],
-                'fail type' => [
-                    'value' => 123,
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                'wrong quoted' => [
+                    'value' => '"test"',
+                    'expectFail' => [],
+                ],
+                'type number' => [
+                    'value' => 1,
+                    'expectFail' => [],
                 ],
             ],
             'STRING' => [
@@ -519,22 +459,19 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
-                'fail not quoted' => [
-                    'value' => 'T',
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                'not quoted' => [
+                    'value' => 'test',
+                    'expectFail' => [],
                 ],
-                'fail type' => [
-                    'value' => 123,
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                'wrong quoted' => [
+                    'value' => '"test"',
+                    'expectFail' => [],
+                ],
+                'type number' => [
+                    'value' => 1,
+                    'expectFail' => [],
                 ],
             ],
             'TEXT' => [
@@ -544,47 +481,49 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
-                'fail not quoted' => [
-                    'value' => 'T',
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                'not quoted' => [
+                    'value' => 'test',
+                    'expectFail' => [],
                 ],
-                'fail type' => [
-                    'value' => 123,
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                'wrong quoted' => [
+                    'value' => '"test"',
+                    'expectFail' => [],
+                ],
+                'type number' => [
+                    'value' => 1,
+                    'expectFail' => [],
                 ],
             ],
             'BOOLEAN' => [
-                'working bool' => [
+                'working bool bool string' => [
                     'value' => 'true',
+                    'expectFail' => [],
+                ],
+                'working bool false string' => [
+                    'value' => 'false',
+                    'expectFail' => [],
+                ],
+                'working bool true' => [
+                    'value' => true,
+                    'expectFail' => [],
+                ],
+                'working bool false' => [
+                    'value' => false,
                     'expectFail' => [],
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
-                    'value' => 'test',
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                    'value' => 'test', // SNFLK will take is false when escaped
+                    'expectFail' => [],
                 ],
                 'fail type 2' => [
                     'value' => 123,
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                    'expectFail' => [], // SNFLK will take is false when escaped
                 ],
             ],
             'DATE' => [
@@ -594,10 +533,7 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 ],
                 'empty' => [
                     'value' => '',
-                    'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail quoted' => [
                     'value' => '\'2022-02-22\'',
@@ -620,8 +556,6 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 'empty' => [
                     'value' => '',
                     'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
                     ],
                 ],
                 'fail quoted' => [
@@ -651,8 +585,6 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 'empty' => [
                     'value' => '',
                     'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
                     ],
                 ],
                 'fail not quoted' => [
@@ -682,8 +614,6 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 'empty' => [
                     'value' => '',
                     'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
                     ],
                 ],
                 'fail quoted' => [
@@ -713,8 +643,6 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 'empty' => [
                     'value' => '',
                     'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
                     ],
                 ],
                 'fail quoted' => [
@@ -744,8 +672,6 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 'empty' => [
                     'value' => '',
                     'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
                     ],
                 ],
                 'fail quoted' => [
@@ -775,8 +701,6 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                 'empty' => [
                     'value' => '',
                     'expectFail' => [
-                        'message' => 'Invalid request:
- - columns[0][definition][default]: "For default empty string use \'\'\'\'."',
                     ],
                 ],
                 'fail quoted' => [
@@ -846,7 +770,16 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                         ));
                     }
                     $this->assertInstanceOf(ClientException::class, $e);
-                    $this->assertStringStartsWith($expectedMessage, $e->getMessage());
+                    $this->assertStringStartsWith(
+                        $expectedMessage,
+                        $e->getMessage(),
+                        sprintf(
+                            'Testing datatype "%s" with case "%s" was not expected exception message: "%s"',
+                            $type,
+                            $caseName,
+                            $e->getMessage()
+                        )
+                    );
                 }
             }
         }
