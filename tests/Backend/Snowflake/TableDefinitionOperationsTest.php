@@ -91,6 +91,10 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                     'value' => '1',
                     'expectFail' => [],
                 ],
+                'working complex' => [
+                    'value' => '1.23',
+                    'expectFail' => [],
+                ],
                 'working_num' => [
                     'value' => 1,
                     'expectFail' => [],
@@ -111,6 +115,10 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                     'value' => '1',
                     'expectFail' => [],
                 ],
+                'working complex' => [
+                    'value' => '1.23',
+                    'expectFail' => [],
+                ],
                 'working_num' => [
                     'value' => 1,
                     'expectFail' => [],
@@ -129,6 +137,10 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
             'NUMERIC' => [
                 'working' => [
                     'value' => '1',
+                    'expectFail' => [],
+                ],
+                'working complex' => [
+                    'value' => '1.23',
                     'expectFail' => [],
                 ],
                 'working_num' => [
@@ -271,6 +283,10 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                     'value' => '1',
                     'expectFail' => [],
                 ],
+                'working complex' => [
+                    'value' => '1.23',
+                    'expectFail' => [],
+                ],
                 'working_num' => [
                     'value' => 1,
                     'expectFail' => [],
@@ -289,6 +305,10 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
             'FLOAT4' => [
                 'working' => [
                     'value' => '1',
+                    'expectFail' => [],
+                ],
+                'working complex' => [
+                    'value' => '1.23',
                     'expectFail' => [],
                 ],
                 'working_num' => [
@@ -311,6 +331,10 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                     'value' => '1',
                     'expectFail' => [],
                 ],
+                'working complex' => [
+                    'value' => '1.23',
+                    'expectFail' => [],
+                ],
                 'working_num' => [
                     'value' => 1,
                     'expectFail' => [],
@@ -329,6 +353,10 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
             'DOUBLE' => [
                 'working' => [
                     'value' => '1',
+                    'expectFail' => [],
+                ],
+                'working complex' => [
+                    'value' => '1.23',
                     'expectFail' => [],
                 ],
                 'working_num' => [
@@ -351,6 +379,10 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                     'value' => '1',
                     'expectFail' => [],
                 ],
+                'working complex' => [
+                    'value' => '1.23',
+                    'expectFail' => [],
+                ],
                 'working_num' => [
                     'value' => 1,
                     'expectFail' => [],
@@ -369,6 +401,10 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
             'REAL' => [
                 'working' => [
                     'value' => '1',
+                    'expectFail' => [],
+                ],
+                'working complex' => [
+                    'value' => '1.23',
                     'expectFail' => [],
                 ],
                 'working_num' => [
@@ -518,12 +554,16 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                     'expectFail' => [],
                 ],
                 'fail type' => [
-                    'value' => 'test', // SNFLK will take is false when escaped
-                    'expectFail' => [],
+                    'value' => 'test',
+                    'expectFail' => [
+                        'message' => 'Boolean default value "test" is not boolean.',
+                    ],
                 ],
                 'fail type 2' => [
                     'value' => 123,
-                    'expectFail' => [], // SNFLK will take is false when escaped
+                    'expectFail' => [
+                        'message' => 'Boolean default value "123" is not boolean.',
+                    ],
                 ],
             ],
             'DATE' => [
@@ -564,11 +604,9 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                         'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
                     ],
                 ],
-                'fail not quoted' => [
+                'datetime' => [
                     'value' => '2021-01-01 00:00:00',
-                    'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
-                    ],
+                    'expectFail' => [],
                 ],
                 'fail type' => [
                     'value' => 'string',
@@ -587,10 +625,9 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                     'expectFail' => [
                     ],
                 ],
-                'fail not quoted' => [
+                'time' => [
                     'value' => '00:00:00',
                     'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
                     ],
                 ],
                 'fail quoted' => [
@@ -622,10 +659,9 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                         'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
                     ],
                 ],
-                'fail not quoted' => [
+                'timestamp' => [
                     'value' => '2021-01-01 00:00:00',
                     'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
                     ],
                 ],
                 'fail type' => [
@@ -651,10 +687,9 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                         'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
                     ],
                 ],
-                'fail not quoted' => [
+                'timestamp' => [
                     'value' => '2021-01-01 00:00:00',
                     'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
                     ],
                 ],
                 'fail type' => [
@@ -680,10 +715,9 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                         'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
                     ],
                 ],
-                'fail not quoted' => [
+                'timestamp' => [
                     'value' => '2021-01-01 00:00:00',
                     'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
                     ],
                 ],
                 'fail type' => [
@@ -709,10 +743,9 @@ class TableDefinitionOperationsTest extends StorageApiTestCase
                         'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
                     ],
                 ],
-                'fail not quoted' => [
+                'timestamp' => [
                     'value' => '2021-01-01 00:00:00 +0000',
                     'expectFail' => [
-                        'message' => 'Table creation ended with a syntax exception, probably due to an invalid "default" column specification. Original exception is:',
                     ],
                 ],
                 'fail type' => [
