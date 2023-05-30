@@ -310,6 +310,49 @@ class ImportTypedTableTest extends ParallelWorkspacesTestCase
         }
     }
 
+    public function testLoadTypedTablesNumeric(): void
+    {
+        $bucketId = $this->getTestBucketId(self::STAGE_IN);
+
+        $tableDefinition = [
+            'name' => 'my-new-table-for_data_preview',
+            'primaryKeysNames' => [],
+            'columns' => [
+                [
+                    'name' => 'id',
+                    'definition' => [
+                        'type' => 'INT',
+                        'nullable' => false,
+                    ],
+                ],
+                [
+                    'name' => 'column_decimal',
+                    'definition' => [
+                        'type' => 'DECIMAL',
+                        'length' => '4,3',
+                    ],
+                ],
+            ],
+        ];
+
+        $csvFile = $this->createTempCsv();
+        $csvFile->writeRow([
+            'id',
+            'column_decimal',
+        ]);
+        $csvFile->writeRow(
+            [
+                '1',
+                '123.123',
+            ]
+        );
+
+        $tableId = $this->_client->createTableDefinition($bucketId, $tableDefinition);
+
+        $this->_client->writeTableAsync($tableId, $csvFile);
+
+    }
+
     public function testLoadTypedTablesLengthOverflowError(): void
     {
         $fullLoadFile = __DIR__ . '/../../_data/users.csv';
