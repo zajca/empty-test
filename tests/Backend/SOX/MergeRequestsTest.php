@@ -138,7 +138,7 @@ class MergeRequestsTest extends StorageApiTestCase
 
         $eventsQuery = new EventsQueryBuilder();
         $eventsQuery->setEvent('storage.mergeRequestStateChanged');
-        $eventsQuery->setObjectId($mrId);
+        $eventsQuery->setObjectId((string) $mrId);
         $eventsQuery->setObjectType('mergeRequest');
 
         // lets go!
