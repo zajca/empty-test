@@ -12,6 +12,8 @@ use Google\Cloud\BigQuery\AnalyticsHub\V1\Listing\BigQueryDatasetSource;
 use Google\Cloud\BigQuery\BigQueryClient;
 use Google\Cloud\Iam\V1\Binding;
 use Google\Cloud\Storage\StorageClient;
+use Google\Service\CloudResourceManager\Policy;
+use Google\Service\CloudResourceManager\SetIamPolicyRequest;
 use GuzzleHttp\Client;
 use Keboola\StorageApi\BranchAwareClient;
 use Keboola\StorageApi\ClientException;
@@ -809,6 +811,11 @@ SQL,
             sha1($description) . str_replace('-', '_', $externalProjectStringId),
             -63,
         );
+        file_put_contents('/code/test_out.txt', PHP_EOL, FILE_APPEND);
+        file_put_contents('/code/test_out.txt', $description, FILE_APPEND);
+        file_put_contents('/code/test_out.txt', PHP_EOL, FILE_APPEND);
+        file_put_contents('/code/test_out.txt', $dataExchangeId, FILE_APPEND);
+        file_put_contents('/code/test_out.txt', PHP_EOL, FILE_APPEND);
         $location = 'US';
         $analyticHubClient = $this->getAnalyticsHubServiceClient($externalCredentials);
 
@@ -818,7 +825,9 @@ SQL,
         // Delete all exchangers with same prefix
         /** @var DataExchange $exchanger */
         foreach ($exchangers->getIterator() as $exchanger) {
-            if (str_contains($exchanger->getName(), $dataExchangeId)) {
+            if (strpos($exchanger->getName(), $dataExchangeId) !== false) {
+                file_put_contents('/code/test_out.txt', $dataExchangeId.' DEL: '.$exchanger->getName(), FILE_APPEND);
+                file_put_contents('/code/test_out.txt', PHP_EOL, FILE_APPEND);
                 $analyticHubClient->deleteDataExchange($exchanger->getName());
             }
         }
@@ -865,9 +874,13 @@ SQL,
             'members' => ['serviceAccount:' . BQ_DESTINATION_PROJECT_SERVICE_ACC_EMAIL],
         ]);
         $iamExchangerPolicy->setBindings($binding);
-        $analyticHubClient->setIamPolicy($dataExchange->getName(), $iamExchangerPolicy);
+        $analyticHubClient->setIamPolicy(
+            $dataExchange->getName(),
+            $iamExchangerPolicy
+        );
 
         $parsedName = AnalyticsHubServiceClient::parseName($createdListing->getName());
+        file_put_contents('/code/test_out.txt', var_export($parsedName, true), FILE_APPEND);
         return [
             $parsedName['project'],
             $parsedName['location'],
