@@ -3,7 +3,7 @@
 namespace Keboola\Test\Backend\Snowflake;
 
 use Keboola\Datatype\Definition\Snowflake;
-use Keboola\StorageApi\ClientException;
+use Keboola\StorageApi\Options\TableImport\DeduplicationStrategy;
 use Keboola\StorageApi\Workspaces;
 use Keboola\TableBackendUtils\Column\ColumnCollection;
 use Keboola\TableBackendUtils\Column\ColumnInterface;
@@ -173,7 +173,7 @@ class TypedTableInWorkspaceTest extends ParallelWorkspacesTestCase
         $this->_client->writeTableAsyncDirect($this->tableId, [
             'dataWorkspaceId' => $workspace['id'],
             'dataTableName' => $tableId,
-            'deduplicationStrategy' => 'insert',
+            'deduplicationStrategy' => DeduplicationStrategy::INSERT->value,
         ]);
         $eventAssertCallback = function ($events) {
             $this->assertCount(1, $events);
@@ -246,7 +246,7 @@ class TypedTableInWorkspaceTest extends ParallelWorkspacesTestCase
             'dataWorkspaceId' => $workspace['id'],
             'dataTableName' => $tableId,
             'incremental' => true,
-            'deduplicationStrategy' => 'insert',
+            'deduplicationStrategy' => DeduplicationStrategy::INSERT->value,
         ]);
 
         $eventAssertCallback = function ($events) {
