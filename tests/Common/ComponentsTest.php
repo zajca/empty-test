@@ -51,6 +51,36 @@ class ComponentsTest extends StorageApiTestCase
         $componentsClient = new \Keboola\StorageApi\Components(new Client(
             ['url' => $this->client->getApiUrl(), 'token' => ''],
         ));
+        /** @var array{
+         *     id: string,
+         *     type: string,
+         *     name: string,
+         *     description: string,
+         *     longDescription: string,
+         *     version: string,
+         *     hasUI: bool,
+         *     hasRun: bool,
+         *     ico32: string,
+         *     ico64: string,
+         *     ico128: string,
+         *     data: array,
+         *     flags: array,
+         *     uri: string,
+         *     complexity: string,
+         *     categories: array,
+         *     documentationUrl: string,
+         *     configurationSchema: mixed,
+         *     configurationRowSchema: mixed,
+         *     emptyConfiguration: mixed,
+         *     emptyConfigurationRow: mixed,
+         *     createConfigurationRowSchema: mixed,
+         *     configurationDescription: mixed,
+         *     uiOptions: mixed,
+         *     features: mixed,
+         *     expiredOn: mixed,
+         *     dataTypesConfiguration: mixed,
+         *     processorConfiguration: mixed
+         * } $component */
         $component = $componentsClient->getPublicComponentDetail($componentId);
 
         $this->assertEquals('wr-db', $component['id']);
